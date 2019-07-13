@@ -28,6 +28,13 @@ public class CricketRequestServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException {
+		String matchId = req.getParameter("Match-UniqueID");
+		try {
+			resp.getWriter().write(sendGet(matchId));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		resp.setContentType("text/plain");
 		resp.getWriter().write("Hello World! Maven Web Project Example.");
 	}
@@ -41,7 +48,7 @@ public class CricketRequestServlet extends HttpServlet{
 		c.sendGet(matchId);
 	}
 
-	private void sendGet(String matchId) throws Exception {
+	private String sendGet(String matchId) throws Exception {
 		String apikey = "WmPJrX2s3KMyZVPFwlm1vxXLXKw1";
 		String id = matchId;
 		String url = "http://cricapi.com/api/cricketScore?apikey="+apikey+"&unique_id="+id;
@@ -57,10 +64,18 @@ public class CricketRequestServlet extends HttpServlet{
 		}
 		ResponsePojo responsePojo = mapper.readValue(result.toString(), ResponsePojo.class);
 		//Output
-		System.out.println("Team - 1 : " + responsePojo.getTeam1() + checkIfTeamIsWinner(responsePojo, 1));
-		System.out.println("Team - 2 : " + responsePojo.getTeam2() + checkIfTeamIsWinner(responsePojo, 2));
-		System.out.println("Winning team’s score : " + getWinningTeamScore(responsePojo));
-		System.out.println("Round rotation : " + getRoundRotation(getWinningTeamScore(responsePojo)));
+		StringBuilder builder = new StringBuilder();
+		builder.append("Team - 1 : " + responsePojo.getTeam1() + checkIfTeamIsWinner(responsePojo, 1) + "\n");
+		builder.append("Team - 2 : " + responsePojo.getTeam2() + checkIfTeamIsWinner(responsePojo, 2) + "\n");
+		builder.append("Winning team’s score : " + getWinningTeamScore(responsePojo) + "\n");
+		builder.append("Round rotation : " + getRoundRotation(getWinningTeamScore(responsePojo)) + "\n");
+//		System.out.println("Team - 1 : " + responsePojo.getTeam1() + checkIfTeamIsWinner(responsePojo, 1));
+//		System.out.println("Team - 2 : " + responsePojo.getTeam2() + checkIfTeamIsWinner(responsePojo, 2));
+//		System.out.println("Winning team’s score : " + getWinningTeamScore(responsePojo));
+//		System.out.println("Round rotation : " + getRoundRotation(getWinningTeamScore(responsePojo)));
+		System.out.println(builder.toString());
+		
+		return builder.toString();
 
 	}
 	
