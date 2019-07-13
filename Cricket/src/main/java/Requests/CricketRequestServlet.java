@@ -2,6 +2,7 @@ package Requests;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,12 +34,16 @@ public class CricketRequestServlet extends HttpServlet{
 
 	public static void main(String args[]) throws Exception {
 		CricketRequestServlet c = new CricketRequestServlet();
-		c.sendGet();
+		Scanner scanner = new Scanner(System.in);
+		String matchId = scanner.next();
+		scanner.close();
+		//c.sendGet("1136617");
+		c.sendGet(matchId);
 	}
 
-	private void sendGet() throws Exception {
+	private void sendGet(String matchId) throws Exception {
 		String apikey = "WmPJrX2s3KMyZVPFwlm1vxXLXKw1";
-		String id = "1136617";
+		String id = matchId;
 		String url = "http://cricapi.com/api/cricketScore?apikey="+apikey+"&unique_id="+id;
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(url);
@@ -52,8 +57,8 @@ public class CricketRequestServlet extends HttpServlet{
 		}
 		ResponsePojo responsePojo = mapper.readValue(result.toString(), ResponsePojo.class);
 		//Output
-		System.out.println("Team - 1 : " + responsePojo.getTeam1() + " (" + checkIfTeamIsWinner(responsePojo, 1) +")");
-		System.out.println("Team - 2 : " + responsePojo.getTeam2() + " (" + checkIfTeamIsWinner(responsePojo, 2) +")");
+		System.out.println("Team - 1 : " + responsePojo.getTeam1() + checkIfTeamIsWinner(responsePojo, 1));
+		System.out.println("Team - 2 : " + responsePojo.getTeam2() + checkIfTeamIsWinner(responsePojo, 2));
 		System.out.println("Winning team’s score : " + getWinningTeamScore(responsePojo));
 		System.out.println("Round rotation : " + getRoundRotation(getWinningTeamScore(responsePojo)));
 
@@ -63,13 +68,13 @@ public class CricketRequestServlet extends HttpServlet{
 		String[] parts = responsePojo.getScore().split("v");
 		if(parts[0].contains("*")) {
 			if(i == 1) {
-				return "winner";
+				return " (winner)";
 			} else {
 				return "";
 			}
 		} else {
 			if(i == 2) {
-				return "winner";
+				return " (winner)";
 			} else {
 				return "";
 			}

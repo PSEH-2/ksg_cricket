@@ -6,11 +6,11 @@
   <display-name>Archetype Created Web Application</display-name>
   
   <servlet>
-    <servlet-name>CricketRequestServlet</servlet-name>
+    <servlet-name>cricketRequestServlet</servlet-name>
     <servlet-class>Requests.CricketRequestServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>CricketRequestServlet</servlet-name>
-    <url-pattern>/score</url-pattern>
+    <servlet-name>cricketRequestServlet</servlet-name>
+    <url-pattern>*/score</url-pattern>
     </servlet-mapping>
 </web-app>
