@@ -40,51 +40,55 @@ public class CricketRequestServlet extends HttpServlet{
 		String apikey = "WmPJrX2s3KMyZVPFwlm1vxXLXKw1";
 		String id = "1136617";
 		String url = "http://cricapi.com/api/cricketScore?apikey="+apikey+"&unique_id="+id;
-
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(url);
-
 		HttpResponse response = client.execute(request);
-
-
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + 
-				response.getStatusLine().getStatusCode());
-
 		BufferedReader rd = new BufferedReader(
 				new InputStreamReader(response.getEntity().getContent()));
-
 		StringBuffer result = new StringBuffer();
 		String line = "";
 		while ((line = rd.readLine()) != null) {
 			result.append(line);
 		}
 		ResponsePojo responsePojo = mapper.readValue(result.toString(), ResponsePojo.class);
-		findWinningTeam(responsePojo);
-		getRoundRotation(responsePojo);
-		System.out.println(responsePojo.getScore());
+		//Output
+		System.out.println("Team - 1 : " + responsePojo.getTeam1() + " (" + checkIfTeamIsWinner(responsePojo, 1) +")");
+		System.out.println("Team - 2 : " + responsePojo.getTeam2() + " (" + checkIfTeamIsWinner(responsePojo, 2) +")");
+		System.out.println("Winning team’s score : " + getWinningTeamScore(responsePojo));
+		System.out.println("Round rotation : " + getRoundRotation(getWinningTeamScore(responsePojo)));
+
+	}
+	
+	private String checkIfTeamIsWinner(ResponsePojo responsePojo, int i) {
+		String[] parts = responsePojo.getScore().split("v");
+		if(parts[0].contains("*")) {
+			if(i == 1) {
+				return "winner";
+			} else {
+				return "";
+			}
+		} else {
+			if(i == 2) {
+				return "winner";
+			} else {
+				return "";
+			}
+		}
 	}
 
-	private void getRoundRotation(ResponsePojo responsePojo) {
-		String a = "140/8";
-		a = a.charAt(a.length() - 1) + a.substring(0, a.length() - 1);
-		System.out.println(a);
-		
+	private String getWinningTeamScore(ResponsePojo responsePojo) {
+		String[] parts = responsePojo.getScore().split("v");
+		if(parts[0].contains("*")) {
+			String[] parts1 = parts[0].split(responsePojo.getTeam1());
+			return parts1[1].substring(0, parts1[1].length() - 2);
+		} else {
+			String[] parts1 = parts[1].split(responsePojo.getTeam2());
+			return parts1[1].substring(0, parts1[1].length() - 2);
+		}
 	}
 
-	private void findWinningTeam(ResponsePojo responsePojo) {
-		String pattern = "v";
-
-	      // Create a Pattern object
-	      Pattern r = Pattern.compile(pattern);
-
-	      // Now create matcher object.
-	      Matcher m = r.matcher(responsePojo.getScore());
-	      if (m.find( )) {
-	    	  System.out.println(m.group(0));
-	      }else {
-	         
-	      }
-		String a = "140/8";
+	private String getRoundRotation(String score) {
+		score = score.charAt(score.length() - 1) + score.substring(0, score.length() - 1);
+		return score;
 	}
 }
