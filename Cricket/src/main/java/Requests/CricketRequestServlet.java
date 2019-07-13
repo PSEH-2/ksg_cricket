@@ -32,7 +32,6 @@ public class CricketRequestServlet extends HttpServlet{
 		try {
 			resp.getWriter().write(sendGet(matchId));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		resp.setContentType("text/plain");
@@ -44,7 +43,6 @@ public class CricketRequestServlet extends HttpServlet{
 		Scanner scanner = new Scanner(System.in);
 		String matchId = scanner.next();
 		scanner.close();
-		//c.sendGet("1136617");
 		c.sendGet(matchId);
 	}
 
@@ -100,10 +98,10 @@ public class CricketRequestServlet extends HttpServlet{
 		String[] parts = responsePojo.getScore().split("v");
 		if(parts[0].contains("*")) {
 			String[] parts1 = parts[0].split(responsePojo.getTeam1());
-			return parts1[1].substring(0, parts1[1].length() - 2);
+			return parts1[1].substring(1, parts1[1].length() - 2);
 		} else {
 			String[] parts1 = parts[1].split(responsePojo.getTeam2());
-			return parts1[1].substring(0, parts1[1].length() - 2);
+			return parts1[1].substring(1, parts1[1].length() - 2);
 		}
 	}
 
